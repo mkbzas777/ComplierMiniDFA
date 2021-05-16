@@ -1,0 +1,2 @@
+digraph G {
+24[shape=doublecircle];rankdir=LR;13->14[label=b];14->15[label=ε];15->16[label=a];16->23[label=ε];23->21[label=ε];21->17[label=ε];17->18[label=c];18->22[label=ε];22->21[label=ε];22->24[label=ε];21->19[label=ε];19->20[label=d];20->22[label=ε];23->24[label=ε];}
