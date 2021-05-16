@@ -1,3 +1,5 @@
+package entity;
+
 public class DFA {
     private int st;
     private char w;

@@ -1,3 +1,5 @@
+package entity;
+
 public class NFA {
     private int id;
     private NFA next1;

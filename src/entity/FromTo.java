@@ -1,3 +1,5 @@
+package entity;
+
 public class FromTo{
     private NFA start;
     private NFA end;

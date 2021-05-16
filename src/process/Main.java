@@ -1,7 +1,13 @@
+package process;
+
+import entity.FromTo;
+import process.DFAToMiniDFA;
+import process.InfixToSuffix;
+import process.NFAToDFA;
+import process.SuffixToNFA;
 
 import java.util.ArrayList;
 
-import java.util.Objects;
 import java.util.Stack;
 
 public class Main {
@@ -41,8 +47,8 @@ public class Main {
     public static String input ="";
     public static void main(String[] args) {
 //        input = "ab|c(d*|a)";
-//        input = "(a*|b*)b(ba)*";
-        input = "a*|b*";
+        input = "(a*|b*)b(ba)*";
+//        input = "a*|b*";
 //        String str = "b*a";
         input = Format(input);
         System.out.println(input);

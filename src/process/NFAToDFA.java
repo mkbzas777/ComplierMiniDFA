@@ -1,3 +1,6 @@
+package process;
+
+import entity.DFA;
 import graphviz.Graphviz;
 
 import java.io.File;
@@ -126,7 +129,7 @@ public class NFAToDFA {
             ArrayList<Integer> key = (ArrayList<Integer>) entry.getKey();
             HashMap<Character, ArrayList<Integer>> val = (HashMap<Character, ArrayList<Integer>>) entry.getValue();
 
-            for(char x:Main.letter){
+            for(char x: Main.letter){
                 if(val.get(x).size()!=0)
                 {
                     if(key.contains(endId)) {
@@ -165,7 +168,7 @@ public class NFAToDFA {
         // gv.increaseDpi();
         gv.decreaseDpi();
         gv.decreaseDpi();
-        File out = new File("DFA"+"."+ type);
+        File out = new File("entity.DFA"+"."+ type);
         gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
     }
 }

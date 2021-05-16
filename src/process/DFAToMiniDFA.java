@@ -1,3 +1,6 @@
+package process;
+
+import entity.DFA;
 import graphviz.Graphviz;
 
 import java.io.File;
@@ -32,7 +35,7 @@ public class DFAToMiniDFA {
         System.out.println(NFAToDFA.allState);
         for (DFA dfaI:miniDFA) {
             HashMap<Character, Integer> hm = new HashMap<>();
-            for(char x:Main.letter)
+            for(char x: Main.letter)
                 hm.put(x,-1);
             for (DFA dfaJ:miniDFA) {
                 if(dfaI.getSt()==dfaJ.getSt())
@@ -44,7 +47,7 @@ public class DFAToMiniDFA {
         for(int i:NFAToDFA.allState)
         {
             HashMap<Character, Integer> hm = new HashMap<>();
-            for(char x:Main.letter)
+            for(char x: Main.letter)
                 hm.put(x,-1);
             stateChange.put(i,hm);
         }
@@ -55,14 +58,14 @@ public class DFAToMiniDFA {
 
         System.out.println("");
         System.out.print("  ");
-        for (char x:Main.letter) {
+        for (char x: Main.letter) {
             System.out.print("  "+x);
         }
         System.out.println();
         int n = stateChange.size();
         for (int i =0;i< n;i++){
             System.out.print(i+":");
-            for (char x:Main.letter) {
+            for (char x: Main.letter) {
                 if (stateChange.get(i) == null)
                     System.out.printf("  -");
                 if (stateChange.get(i).get(x) != -1)
@@ -87,7 +90,7 @@ public class DFAToMiniDFA {
         System.out.println(stateChange);
         int group = Main.letter.size();
         for(int i=0;i<stateChange.size();i++){
-            for (int j=0;j<Main.letter.size();j++) {
+            for (int j = 0; j< Main.letter.size(); j++) {
                 if(stateChange.get(i)!=null)
                     array[i][j] = stateChange.get(i).get(Main.letter.get(j));
                 else
@@ -105,7 +108,7 @@ public class DFAToMiniDFA {
         ArrayList<ArrayList<Integer>> arrayLists = new ArrayList<>();
         for(int i=0;i<stateChange.size();i++){
             ArrayList<Integer>arrayList = new ArrayList<>();
-            for(int j=Main.letter.size()+1,n=0;j<2*Main.letter.size()+1||n<Main.letter.size();j++,n++)
+            for(int j = Main.letter.size()+1, n = 0; j<2* Main.letter.size()+1||n< Main.letter.size(); j++,n++)
             {
 
                 if(array[i][n]!=-1)
@@ -200,7 +203,7 @@ public class DFAToMiniDFA {
 //        ShowState();
         System.out.println("FinalState:"+finalState);
         int id = 2;
-        int[][] array = new int[stateChange.size()][2*Main.letter.size()+2];
+        int[][] array = new int[stateChange.size()][2* Main.letter.size()+2];
         InitArray(array);
         RenewArray(array,id);
         System.out.println(Arrays.deepToString(array));
@@ -214,7 +217,7 @@ public class DFAToMiniDFA {
                 arrayList.add(j);
                 System.out.println(arrayList);
                 if (array[i][j] != -1&&!arrayLists.contains(arrayList)){
-                    str+=array[i][group]+"->"+array[i][j]+"[label="+Main.letter.get(j-group-1)+"];";
+                    str+=array[i][group]+"->"+array[i][j]+"[label="+ Main.letter.get(j-group-1)+"];";
                     arrayLists.add(arrayList);
                     if(finalState.contains(i))
                         str+=array[i][group]+"[shape=doublecircle];";

@@ -1,3 +1,8 @@
+package process;
+
+import entity.DFA;
+import entity.FromTo;
+import entity.NFA;
 import graphviz.Graphviz;
 
 import java.io.File;
@@ -71,7 +76,7 @@ public class SuffixToNFA {
         }
 
         getDotFormat(Main.stack.peek().getStart());
-        String dotFormat = "node[shape=plaintext];"+Main.stack.peek().getStart().getId()+"[shape=circle];\"\"->"+Main.stack.peek().getStart().getId()+"[label = start];node[shape=circle];rankdir=LR;"+Main.stack.peek().getEnd().getId()+"[shape=doublecircle];"+str;
+        String dotFormat = "node[shape=plaintext];"+ Main.stack.peek().getStart().getId()+"[shape=circle];\"\"->"+ Main.stack.peek().getStart().getId()+"[label = start];node[shape=circle];rankdir=LR;"+ Main.stack.peek().getEnd().getId()+"[shape=doublecircle];"+str;
         DrawNFA(dotFormat);
 
     }
@@ -106,7 +111,7 @@ public class SuffixToNFA {
         // gv.increaseDpi();
         gv.decreaseDpi();
         gv.decreaseDpi();
-        File out = new File("NFA"+"."+ type);
+        File out = new File("entity.NFA"+"."+ type);
         gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
     }
 }
