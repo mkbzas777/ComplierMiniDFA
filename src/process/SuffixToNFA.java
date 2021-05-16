@@ -84,6 +84,12 @@ public class SuffixToNFA {
     public static Set<NFA> set=new HashSet<>();
 
     public static String str="";
+    public static void RemoveSuffixToNFA()
+    {
+        str="";
+        set = new HashSet<>();
+
+    }
 
     public static void getDotFormat(NFA start)
     {
@@ -111,7 +117,7 @@ public class SuffixToNFA {
         // gv.increaseDpi();
         gv.decreaseDpi();
         gv.decreaseDpi();
-        File out = new File("entity.NFA"+"."+ type);
+        File out = new File("NFA"+"."+ type);
         gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
     }
 }

@@ -1,6 +1,7 @@
 package process;
 
 import entity.FromTo;
+import gui.MyFrame;
 import process.DFAToMiniDFA;
 import process.InfixToSuffix;
 import process.NFAToDFA;
@@ -44,18 +45,29 @@ public class Main {
         }
         return stringBuffer.toString();
     }
+    public static void RemoveAll(){
+        input="";
+        stack=new Stack<>();
+        letter=new ArrayList<>();
+        NFAToDFA.RemoveNFAToDFA();
+        DFAToMiniDFA.RemoveDFAToMiniDFA();
+        SuffixToNFA.RemoveSuffixToNFA();
+
+    }
     public static String input ="";
     public static void main(String[] args) {
 //        input = "ab|c(d*|a)";
-        input = "(a*|b*)b(ba)*";
+
+//        input = "(a*|b*)b(ba)*";
+          MyFrame frame = new MyFrame();
+//        input = "(a|b)*abb";
+
+//        input = "a*(abb)*b(b|a)*";
+
 //        input = "a*|b*";
+//        input = "a*(abb)*";
 //        String str = "b*a";
-        input = Format(input);
-        System.out.println(input);
-        String suffix = InfixToSuffix.Convert(input);
-        System.out.println(suffix);
-        SuffixToNFA.Convert(suffix);
-        NFAToDFA.Convert();
-        DFAToMiniDFA.Convert();
+
+
     }
 }

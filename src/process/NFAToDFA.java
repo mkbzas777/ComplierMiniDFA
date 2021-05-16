@@ -10,7 +10,6 @@ public class NFAToDFA {
 
     public static ArrayList<DFA> dfas = new ArrayList<>();
 
-    public static Set<ArrayList<Integer>> set = new HashSet<>();
 
     //ε-闭包
     public static void EClosure(int start, ArrayList<Integer> arr) {
@@ -120,6 +119,17 @@ public class NFAToDFA {
     public static ArrayList<Integer> finalState = new ArrayList<>();
 
     public static HashSet<Integer> allState = new HashSet<>();
+    public static void RemoveNFAToDFA()
+    {
+        dfas = new ArrayList<>();
+        bg = new ArrayList<>();
+        maps = new HashMap<>();
+        DFAs = new ArrayList<>();
+        str="";
+        finalState = new ArrayList<>();
+        allState = new HashSet<>();
+    }
+
     public static void getDotFormat(int endId)
 
     {
@@ -168,7 +178,7 @@ public class NFAToDFA {
         // gv.increaseDpi();
         gv.decreaseDpi();
         gv.decreaseDpi();
-        File out = new File("entity.DFA"+"."+ type);
+        File out = new File("DFA"+"."+ type);
         gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
     }
 }

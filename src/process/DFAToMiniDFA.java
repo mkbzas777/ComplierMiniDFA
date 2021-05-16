@@ -8,17 +8,16 @@ import java.util.*;
 
 public class DFAToMiniDFA {
 
-    private static ArrayList<DFA> miniDFA = NFAToDFA.DFAs;
     public static HashMap<Integer,HashMap<Character,Integer>> stateChange = new HashMap<>();
-    public static ArrayList<Integer> finalState = NFAToDFA.finalState;
+
     //删除多余
     public static void DeleteSurplus(){
         ArrayList<DFA> surplus;
         do {
             surplus = new ArrayList<>();
-            for (DFA dfaI : miniDFA) {
+            for (DFA dfaI : NFAToDFA.DFAs) {
                 boolean flag = false;
-                for (DFA dfaJ : miniDFA)
+                for (DFA dfaJ : NFAToDFA.DFAs)
                     if (dfaI.getSt() == 0 || dfaI.getSt() == dfaJ.getEd()) {
                         flag = true;
                         break;
@@ -27,17 +26,17 @@ public class DFAToMiniDFA {
                     surplus.add(dfaI);
             }
         }while(surplus.size()!=0);
-        miniDFA.removeAll(surplus);
+        NFAToDFA.DFAs.removeAll(surplus);
     }
 //获取状态转换图
     public static void GetStateChange(){
-        System.out.println(miniDFA);
+        System.out.println(NFAToDFA.DFAs);
         System.out.println(NFAToDFA.allState);
-        for (DFA dfaI:miniDFA) {
+        for (DFA dfaI:NFAToDFA.DFAs) {
             HashMap<Character, Integer> hm = new HashMap<>();
             for(char x: Main.letter)
                 hm.put(x,-1);
-            for (DFA dfaJ:miniDFA) {
+            for (DFA dfaJ:NFAToDFA.DFAs) {
                 if(dfaI.getSt()==dfaJ.getSt())
                     hm.put(dfaJ.getW(),dfaJ.getEd());
             }
@@ -78,7 +77,7 @@ public class DFAToMiniDFA {
     }
     //
     public static int Move(int i,char x){
-        for (DFA DFA:miniDFA) {
+        for (DFA DFA:NFAToDFA.DFAs) {
             if(DFA.getSt() == i && DFA.getW() == x)
                 return DFA.getEd();
         }
@@ -96,7 +95,7 @@ public class DFAToMiniDFA {
                 else
                     array[i][j]=-1;
             }
-            if(finalState.contains(i))
+            if(NFAToDFA.finalState.contains(i))
                 array[i][Main.letter.size()]=0;
             else
                 array[i][Main.letter.size()]=1;
@@ -143,13 +142,15 @@ public class DFAToMiniDFA {
                 array[i][2*group+2-1]=1;
             }
         }
-        System.out.println(Arrays.deepToString(array));
+        //System.out.println(Arrays.deepToString(array));
     }
 
-    public static void RenewArray(int[][] array,int groupID) {
+    public static int RenewArray(int[][] array,int groupID) {
         int group = Main.letter.size();
-        int groupNum = groupID;
         boolean flag = true;
+//        System.out.println();
+//        System.out.println("array b:"+Arrays.deepToString(array));
+//        System.out.println();
         for (int i = 0; i < stateChange.size(); i++) {
             if(array[i][2*group+1]==1)
             {
@@ -158,57 +159,68 @@ public class DFAToMiniDFA {
                 flag=false;
             }
         }
+        groupID+=1;
+            for (int g = 0; g < groupID; g++) {
+                ArrayList<ArrayList<Integer>> arrayLists = new ArrayList<>();
+                for (int i = 0; i < stateChange.size(); i++) {
+                    ArrayList<Integer> arrayList = new ArrayList<>();
+                    for (int j = Main.letter.size() + 1, n = 0; j < 2 * Main.letter.size() + 1 || n < Main.letter.size(); j++, n++) {
+                        if (array[i][n] != -1)
+                            array[i][j] = array[array[i][n]][Main.letter.size()];
+                        else
+                            array[i][j] = -1;
+                        if (array[i][group] == g)
+                            arrayList.add(array[i][j]);
 
-        for (int g = 0; g < groupNum; g++) {
-            ArrayList<ArrayList<Integer>> arrayLists = new ArrayList<>();
-            for(int i=0;i<stateChange.size();i++) {
-                ArrayList<Integer> arrayList = new ArrayList<>();
-                for (int j = Main.letter.size() + 1, n = 0; j < 2 * Main.letter.size() + 1 || n < Main.letter.size(); j++, n++) {
-                    if (array[i][n] != -1)
-                        array[i][j] = array[array[i][n]][Main.letter.size()];
-                    else
-                        array[i][j] = -1;
-                    if (array[i][group] == g)
-                        arrayList.add(array[i][j]);
+                    }
+                    arrayLists.add(arrayList);
+                }
+                ArrayList<Integer> simple = new ArrayList<>();
+                for (int x = 0; x < arrayLists.size(); x++) {
+                    if (!arrayLists.get(x).isEmpty()) {
+                        simple = arrayLists.get(x);
+                        break;
+                    }
 
                 }
-                arrayLists.add(arrayList);
-            }
-            ArrayList<Integer> simple = new ArrayList<>();
-            for(int x=0;x<arrayLists.size();x++)
-            {
-                if(!arrayLists.get(x).isEmpty() )
-                {
-                    simple = arrayLists.get(x);
-                    break;
-                }
-
-            }
-            //System.out.println(simple);
-            for(int x=0;x<arrayLists.size();x++)
-            {
-                if(!arrayLists.get(x).isEmpty() && (!arrayLists.get(x).equals(simple))){
-                    array[x][2*group+2-1]=1;
+                //System.out.println(simple);
+                for (int x = 0; x < arrayLists.size(); x++) {
+                    if (!arrayLists.get(x).isEmpty() && (!arrayLists.get(x).equals(simple))) {
+                        array[x][2 * group + 2 - 1] = 1;
+                    }
                 }
             }
+//        System.out.println();
+//        System.out.println("array e:"+Arrays.deepToString(array));
+//        System.out.println();
+        if(!flag) {
+            return RenewArray(array, groupID);
         }
-        if(!flag)
-            RenewArray(array,++groupID);
+        return groupID;
 
     }
 
+    public static void RemoveDFAToMiniDFA()
+    {
+        stateChange = new HashMap<>();
+        str = "";
+    }
     private static String str = "";
     public static void Divide(){
         GetStateChange();
-//        ShowState();
-        System.out.println("FinalState:"+finalState);
-        int id = 2;
+        ShowState();
+        System.out.println("FinalState:"+NFAToDFA.finalState);
+
         int[][] array = new int[stateChange.size()][2* Main.letter.size()+2];
         InitArray(array);
-        RenewArray(array,id);
+        int num = RenewArray(array,2)-1;
+        System.out.println(num);
         System.out.println(Arrays.deepToString(array));
         int group = Main.letter.size();
         ArrayList<ArrayList<Integer>> arrayLists = new ArrayList<>();
+        HashSet<Integer> start = new HashSet<>();
+        for (int i = 0; i<num;i++)
+            start.add(i);
         for(int i=0;i<stateChange.size();i++) {
             for (int j = group+1; j < 2*group+1; j++) {
                 ArrayList<Integer> arrayList = new ArrayList<>();
@@ -216,19 +228,22 @@ public class DFAToMiniDFA {
                 arrayList.add(array[i][j]);
                 arrayList.add(j);
                 System.out.println(arrayList);
+                if(NFAToDFA.finalState.contains(i)&&!arrayLists.contains(arrayList))
+                    str+=array[i][group]+"[shape=doublecircle];";
                 if (array[i][j] != -1&&!arrayLists.contains(arrayList)){
                     str+=array[i][group]+"->"+array[i][j]+"[label="+ Main.letter.get(j-group-1)+"];";
                     arrayLists.add(arrayList);
-                    if(finalState.contains(i))
-                        str+=array[i][group]+"[shape=doublecircle];";
+                    start.remove(array[i][j]);
                 }
             }
-
-
         }
-
+        System.out.println(start);
+//        Iterator<Integer> it = start.iterator();
+//        if (it.hasNext())
+//        str+="node[shape=plaintext];\"\"->"+it.next()+"[label=start];";
 
     }
+
 
     public static void Convert()
     {
