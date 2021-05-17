@@ -30,6 +30,8 @@ public class Main {
         stringBuffer.append(str);
         if(isLetter(stringBuffer.charAt(0)))
             letter.add(stringBuffer.charAt(0));
+        if((isLetter(stringBuffer.charAt(0)) && stringBuffer.charAt(1) == '('))
+            stringBuffer.insert(1,"·");
         for(int i = 1;i < stringBuffer.length() ; i++)
         {
             if(isLetter(stringBuffer.charAt(i))){
@@ -39,7 +41,10 @@ public class Main {
                     stringBuffer.insert(i,"·");
                 if(i !=stringBuffer.length()-1 && stringBuffer.charAt(i+1) == '(')
                     stringBuffer.insert(i+1,"·");
+
             }else if(stringBuffer.charAt(i-1) == '*' && stringBuffer.charAt(i) == '('){
+                stringBuffer.insert(i,"·");
+            } else if(stringBuffer.charAt(i-1) == ')'&& stringBuffer.charAt(i) == '('){
                 stringBuffer.insert(i,"·");
             }
         }

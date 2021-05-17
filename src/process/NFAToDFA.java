@@ -13,11 +13,13 @@ public class NFAToDFA {
 
     //ε-闭包
     public static void EClosure(int start, ArrayList<Integer> arr) {
-        if (!arr.contains(start))
+//        HashSet<Integer> isRepeat = new HashSet<>();
+        if (!arr.contains(start)) {
             arr.add(start);
-        for (DFA DFA : dfas) {
-            if (DFA.getSt() == start && DFA.getW() == 'ε')
-                EClosure(DFA.getEd(), arr);
+            for (DFA DFA : dfas) {
+                if (DFA.getSt() == start && DFA.getW() == 'ε')
+                    EClosure(DFA.getEd(), arr);
+            }
         }
     }
 
