@@ -1,5 +1,8 @@
 package entity;
 
+/**
+ * 用于构建NFA的数据结构，方便用逆波兰表达式转化为NFA
+ */
 public class NFA {
     private int id;
     private NFA next1;

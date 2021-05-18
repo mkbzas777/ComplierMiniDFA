@@ -9,7 +9,14 @@ import java.util.*;
 public class NFAToDFA {
 
     public static ArrayList<DFA> dfas = new ArrayList<>();
+    public static ArrayList<DFA> DFAs = new ArrayList<>();
+    public static ArrayList<Integer> finalState = new ArrayList<>();
+    public static HashSet<Integer> allState = new HashSet<>();
 
+    private static ArrayList<ArrayList<Integer>> bg = new ArrayList<>();
+
+    private static HashMap<ArrayList<Integer>, HashMap<Character, ArrayList<Integer>>> maps = new HashMap<>();
+    private static String str = "";
 
     //ε-闭包
     public static void EClosure(int start, ArrayList<Integer> arr) {
@@ -32,55 +39,40 @@ public class NFAToDFA {
         }
 
     }
-    //状态子集
 
+    //状态子集
     /**
      * 1.求通过闭包
      * 2.求通过闭包的ε-闭包
      */
-    public static boolean SClosure(ArrayList<Integer> arrayList, HashMap<Character, ArrayList<Integer>> map) {
-        int flag = 0;
+    public static void SClosure(ArrayList<Integer> arrayList, HashMap<Character, ArrayList<Integer>> map) {
+
         for (char x : Main.letter) {
             ArrayList<Integer> closure = new ArrayList<>();
             for (int i : arrayList) {
                 NClosure(i, closure, x);
             }
-//            if (closure.size() != 0)
-//                    EClosure(closure.get(0), closure);
-            HashSet set = new HashSet<Integer>();
+            HashSet<Integer> set = new HashSet<>();
             if (closure.size() != 0)
-                for (int i:closure) {
+                for (int i : closure) {
                     ArrayList<Integer> e = new ArrayList<>();
                     EClosure(i, e);
                     set.addAll(e);
                 }
-            closure.addAll(new ArrayList<Integer>(set));
-
+            closure.addAll(set);
             map.put(x, closure);
-            if (!set.contains(closure)) {
-                set.add(closure);
-                ++flag;
-            }
         }
-        //System.out.println(arrayList + " " + map);
-        return flag != 0;
+        System.out.println(arrayList + " " + map);
+
     }
 
-    /**
-     *
-     */
-
-
-    private static ArrayList<ArrayList<Integer>> bg = new ArrayList<>();
-
-    private static HashMap<ArrayList<Integer>,HashMap<Character, ArrayList<Integer>>> maps = new HashMap<>();
     public static void Convert() {
 
         int startId = Main.stack.peek().getStart().getId();
 
         int endId = Main.stack.peek().getEnd().getId();
 
-        //NFA表达式
+        //输出NFA表达式
         String[] exp = SuffixToNFA.str.split(";");
         for (String s : exp) {
             System.out.println(s);
@@ -88,12 +80,14 @@ public class NFAToDFA {
         //
         HashMap<Character, ArrayList<Integer>> map = new HashMap<>();
         ArrayList<Integer> arrayList = new ArrayList<>();
+        //初始化
         EClosure(startId, arrayList);
         SClosure(arrayList, map);
         bg.add(arrayList);
         maps.put(arrayList, map);
         Queue<HashMap<Character, ArrayList<Integer>>> queue = new LinkedList<>();
         queue.add(map);
+        //用队列实现遍历
         while (!queue.isEmpty()) {
 
             HashMap<Character, ArrayList<Integer>> mapN = queue.poll();
@@ -111,57 +105,47 @@ public class NFAToDFA {
         }
         //System.out.println(maps);
         getDotFormat(endId);
-        DrawDFA("node[shape=plaintext];0[shape=circle];\"\"->0[label = start];node[shape=circle];rankdir=LR;"+str);
+        DrawDFA("node[shape=plaintext];0[shape=circle];\"\"->0[label = start];node[shape=circle];rankdir=LR;" + str);
 
     }
-    private static String str="";
 
-    public static ArrayList<DFA> DFAs = new ArrayList<>();
-
-    public static ArrayList<Integer> finalState = new ArrayList<>();
-
-    public static HashSet<Integer> allState = new HashSet<>();
-    public static void RemoveNFAToDFA()
-    {
+    public static void RemoveNFAToDFA() {
         dfas = new ArrayList<>();
         bg = new ArrayList<>();
         maps = new HashMap<>();
         DFAs = new ArrayList<>();
-        str="";
+        str = "";
         finalState = new ArrayList<>();
         allState = new HashSet<>();
     }
 
-    public static void getDotFormat(int endId)
-
-    {
+    public static void getDotFormat(int endId) {
         Iterator<Map.Entry<ArrayList<Integer>, HashMap<Character, ArrayList<Integer>>>> iter = maps.entrySet().iterator();
-        while (iter.hasNext()){
-            Map.Entry entry = (Map.Entry) iter.next();
+        while (iter.hasNext()) {
+            Map.Entry entry = iter.next();
             ArrayList<Integer> key = (ArrayList<Integer>) entry.getKey();
             HashMap<Character, ArrayList<Integer>> val = (HashMap<Character, ArrayList<Integer>>) entry.getValue();
 
-            for(char x: Main.letter){
-                if(val.get(x).size()!=0)
-                {
-                    if(key.contains(endId)) {
-                        int fs= bg.indexOf(key);
+            for (char x : Main.letter) {
+                if (val.get(x).size() != 0) {
+                    if (key.contains(endId)) {
+                        int fs = bg.indexOf(key);
                         str += fs + "[shape=doublecircle];";
-                        if(!finalState.contains(fs))
+                        if (!finalState.contains(fs))
                             finalState.add(fs);
                     }
-                    if(val.get(x).contains(endId)) {
-                        int fs= bg.indexOf(val.get(x));
+                    if (val.get(x).contains(endId)) {
+                        int fs = bg.indexOf(val.get(x));
                         str += fs + "[shape=doublecircle];";
-                        if(!finalState.contains(fs))
+                        if (!finalState.contains(fs))
                             finalState.add(fs);
                     }
 
 
                     allState.add(bg.indexOf(key));
                     allState.add(bg.indexOf(val.get(x)));
-                    str+=bg.indexOf(key)+"->"+bg.indexOf(val.get(x))+"[label="+x+"];";
-                    DFAs.add(new DFA(bg.indexOf(key),x,bg.indexOf(val.get(x))));
+                    str += bg.indexOf(key) + "->" + bg.indexOf(val.get(x)) + "[label=" + x + "];";
+                    DFAs.add(new DFA(bg.indexOf(key), x, bg.indexOf(val.get(x))));
                 }
 
             }
@@ -170,8 +154,8 @@ public class NFAToDFA {
 
     }
 
-    public static void DrawDFA(String dotFormat){
-        Graphviz gv=new Graphviz();
+    public static void DrawDFA(String dotFormat) {
+        Graphviz gv = new Graphviz();
         gv.addln(gv.start_graph());
         gv.add(dotFormat);
         gv.addln(gv.end_graph());
@@ -180,7 +164,7 @@ public class NFAToDFA {
         // gv.increaseDpi();
         gv.decreaseDpi();
         gv.decreaseDpi();
-        File out = new File("DFA"+"."+ type);
-        gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
+        File out = new File("DFA" + "." + type);
+        gv.writeGraphToFile(gv.getGraph(gv.getDotSource(), type), out);
     }
 }

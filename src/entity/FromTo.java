@@ -1,6 +1,10 @@
 package entity;
 
-public class FromTo{
+/**
+ * 用于在转换NFA的过程中存储NFA段的开始于结束
+ */
+
+public class FromTo {
     private NFA start;
     private NFA end;
 

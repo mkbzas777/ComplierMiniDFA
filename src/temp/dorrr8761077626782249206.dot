@@ -1,0 +1,2 @@
+digraph G {
+node[shape=circle];rankdir=LR;1->0[label=a];1->0[label=c];0[shape=doublecircle];0[shape=doublecircle];0->0[label=b];0[shape=doublecircle];0[shape=doublecircle];0[shape=doublecircle];0[shape=doublecircle];0[shape=doublecircle];0[shape=doublecircle];}

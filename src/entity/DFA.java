@@ -1,5 +1,8 @@
 package entity;
 
+/**
+ * 构造类似于图的数据结构来表示DFA的出度入度
+ */
 public class DFA {
     private int st;
     private char w;
@@ -37,6 +40,6 @@ public class DFA {
 
     @Override
     public String toString() {
-        return   st + "-" + w + "->" + ed ;
+        return st + "-" + w + "->" + ed;
     }
 }

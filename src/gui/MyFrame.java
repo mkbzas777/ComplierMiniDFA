@@ -1,6 +1,5 @@
 package gui;
 
-import entity.NFA;
 import process.*;
 
 import javax.imageio.ImageIO;
@@ -9,11 +8,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Stack;
 
 public class MyFrame extends JFrame {
+    public String judeg = "abcdefghigjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ()*|";
     ImageIcon imageIcon = new ImageIcon();
     JLabel showImage = new JLabel();
     JPanel panel1 = new JPanel();
@@ -23,17 +22,18 @@ public class MyFrame extends JFrame {
     JTextField lambda = new JTextField(20);
     JLabel suffix = new JLabel();
     JButton confirm = new JButton("Confirm");
-    public MyFrame()
-    {
-        setBounds(300,300,1400,600);
+
+    public MyFrame() {
+        setBounds(300, 300, 1400, 600);
         setTitle("NFA->DFA->miniDFA");
         setResizable(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(IsLegal(lambda.getText())) {
-                    Main.input = lambda.getText();
+                String input = lambda.getText().trim().replaceAll("\\s*","");
+                if (IsLegal(input)) {//如果输入合法，进行计算
+                    Main.input = input;
                     Main.input = Main.Format(Main.input);
                     System.out.println(Main.input);
                     String Suffix = InfixToSuffix.Convert(Main.input);
@@ -43,9 +43,8 @@ public class MyFrame extends JFrame {
                     NFAToDFA.Convert();
                     DFAToMiniDFA.Convert();
                     Main.RemoveAll();
-                }
-                else
-                    JOptionPane.showMessageDialog(null,"Input error, please check input!");
+                } else//不合法则弹出提示
+                    JOptionPane.showMessageDialog(null, "Input error, please check input!");
             }
         });
         showDFA.addActionListener(new ActionListener() {
@@ -102,11 +101,11 @@ public class MyFrame extends JFrame {
 //        suffix.setText("逆波兰表达式:"+Main.input);
         add(panel1, BorderLayout.NORTH);
 
-        showImage.setBounds(40,40,1000,500);
+        showImage.setBounds(40, 40, 1000, 500);
 
         showImage.setIcon(imageIcon);
 
-        add(showImage,BorderLayout.CENTER);
+        add(showImage, BorderLayout.CENTER);
         File file = new File("Z:\\Idea_Project\\ComplierMiniDFA\\load.png");
         Image image = null;
         try {
@@ -118,25 +117,21 @@ public class MyFrame extends JFrame {
         imageIcon.setImage(image);
         setVisible(true);
     }
-    public String judeg = "abcdefghigjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ()*|";
-    public boolean IsLegal(String str)
+
+    public boolean IsLegal(String str)//输入判断
     {
         Stack<Character> stack = new Stack<>();
-        for(int i=0;i<str.length();i++)
-        {
-            if(judeg.contains(String.valueOf(str.charAt(i))))
-            {
-                if(str.charAt(i)=='(')
+        for (int i = 0; i < str.length(); i++) {
+            if (judeg.contains(String.valueOf(str.charAt(i)))) {
+                if (str.charAt(i) == '(')
                     stack.push(str.charAt(i));
-                if(str.charAt(i)==')')
-                {
-                    if(!stack.isEmpty())
+                if (str.charAt(i) == ')') {
+                    if (!stack.isEmpty())
                         stack.pop();
                     else
                         return false;
                 }
-            }
-            else
+            } else
                 return false;
         }
         return stack.isEmpty();
