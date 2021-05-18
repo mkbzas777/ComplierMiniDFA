@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Stack;
 
 public class MyFrame extends JFrame {
     ImageIcon imageIcon = new ImageIcon();
@@ -31,18 +32,20 @@ public class MyFrame extends JFrame {
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Main.input=lambda.getText();
-                Main.input = Main.Format(Main.input);
-
-                System.out.println(Main.input);
-                String Suffix = InfixToSuffix.Convert(Main.input);
-                suffix.setText("逆波兰表达式:"+Suffix);
-                System.out.println(Suffix);
-                SuffixToNFA.Convert(Suffix);
-                NFAToDFA.Convert();
-                DFAToMiniDFA.Convert();
-                Main.RemoveAll();
-
+                if(IsLegal(lambda.getText())) {
+                    Main.input = lambda.getText();
+                    Main.input = Main.Format(Main.input);
+                    System.out.println(Main.input);
+                    String Suffix = InfixToSuffix.Convert(Main.input);
+                    suffix.setText("逆波兰表达式:" + Suffix);
+                    System.out.println(Suffix);
+                    SuffixToNFA.Convert(Suffix);
+                    NFAToDFA.Convert();
+                    DFAToMiniDFA.Convert();
+                    Main.RemoveAll();
+                }
+                else
+                    JOptionPane.showMessageDialog(null,"Input error, please check input!");
             }
         });
         showDFA.addActionListener(new ActionListener() {
@@ -114,6 +117,29 @@ public class MyFrame extends JFrame {
         assert image != null;
         imageIcon.setImage(image);
         setVisible(true);
+    }
+    public String judeg = "abcdefghigjlmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ()*|";
+    public boolean IsLegal(String str)
+    {
+        Stack<Character> stack = new Stack<>();
+        for(int i=0;i<str.length();i++)
+        {
+            if(judeg.contains(String.valueOf(str.charAt(i))))
+            {
+                if(str.charAt(i)=='(')
+                    stack.push(str.charAt(i));
+                if(str.charAt(i)==')')
+                {
+                    if(!stack.isEmpty())
+                        stack.pop();
+                    else
+                        return false;
+                }
+            }
+            else
+                return false;
+        }
+        return stack.isEmpty();
     }
 
 }
